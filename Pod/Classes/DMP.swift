@@ -116,6 +116,11 @@ open class DMP:NSObject{
     Tracking is enabled only if advertising id is enabled on the user's device
     */
     public static var trackingEnabled: Bool{
+        if #available(iOS 14, *) {
+            if (sharedManager.trackingEnabledControl == true) {
+                return true
+            }
+        }
         return ASIdentifierManager.shared().isAdvertisingTrackingEnabled
     }
     
@@ -168,6 +173,10 @@ open class DMP:NSObject{
     */
     fileprivate var isNewSession = true
     
+    
+    
+    fileprivate var trackingEnabledControl: Bool = false
+    
     /**
     The DMP is a singleton, use the initialize method to set the values in the singleton
     */
@@ -192,6 +201,12 @@ open class DMP:NSObject{
     @objc open class func startNewSession(){
         dispatchQueue.sync{
             sharedManager.isNewSession = true
+        }
+    }
+    
+    @objc open class func setTrackingControl(tracking: Bool){
+        dispatchQueue.sync{
+            sharedManager.trackingEnabledControl = tracking
         }
     }
     
